@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import service from './service';
 
+const result = await service.login(username, password);
+localStorage.setItem('token', result.token);
 function Login({ onLogin }) {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');

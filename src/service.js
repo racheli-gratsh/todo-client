@@ -5,6 +5,10 @@ axios.defaults.baseURL = API_URL;
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 axios.defaults.headers.put['Content-Type'] = 'application/json';
 
+login: async (username, password) => {
+    const result = await axios.post('/login', { username, password });
+    return result.data;
+}
 // הוסף token לכל בקשה אוטומטית
 axios.interceptors.request.use(config => {
     const token = localStorage.getItem('token');
