@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-// יצירת מופע ייעודי עם הכתובת של השרת
+// 1. יצירת מופע ייעודי (Instance) עם הכתובת המדויקת של השרת
 const apiClient = axios.create({
     baseURL: "https://todo-api-oyhv.onrender.com",
     headers: {
@@ -8,7 +8,7 @@ const apiClient = axios.create({
     }
 });
 
-// הוספת ה-Token לכל בקשה דרך המופע החדש
+// 2. הוספת ה-Token לכל בקשה שיוצאת דרך המופע החדש
 apiClient.interceptors.request.use(config => {
     const token = localStorage.getItem('token');
     if (token) {
@@ -17,7 +17,7 @@ apiClient.interceptors.request.use(config => {
     return config;
 });
 
-// טיפול בשגיאות 401
+// 3. טיפול בשגיאות 401 (ניתוק משתמש לא מורשה) דרך המופע החדש
 apiClient.interceptors.response.use(
     response => response,
     error => {
@@ -25,24 +25,33 @@ apiClient.interceptors.response.use(
             localStorage.removeItem('token');
             window.location.href = '/';
         }
+        console.error('API Error:', error);
         return Promise.reject(error);
     }
 );
 
 const service = {
     getTasks: async () => {
-        // שים לב: משתמשים ב-apiClient במקום ב-axios
-        const result = await apiClient.get('/items');
-        return Array.isArray(result.data) ? result.data : [];
+        try {
+            // שים לב: כאן ובכל הפונקציות למטה משתמשים ב-apiClient במקום ב-axios
+            const result = await apiClient.get('/items');
+            return Array.isArray(result.data) ? result.data : [];
+        } catch (error) {
+            console.error("Failed to fetch tasks:", error);
+            return [];
+        }
     },
+
     addTask: async (name) => {
-        const result = await apiClient.post('/items', { name, isComplete: false });
+        const result = await apiClient.post('/items', { name: name, isComplete: false });
         return result.data;
     },
+
     setCompleted: async (id, isComplete, name) => {
-        const result = await apiClient.put(`/items/${id}`, { id, name, isComplete });
+        const result = await apiClient.put(`/items/${id}`, { id: id, name: name, isComplete: isComplete });
         return result.data;
     },
+
     deleteTask: async (id) => {
         const result = await apiClient.delete(`/items/${id}`);
         return result.data;
