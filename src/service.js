@@ -1,15 +1,12 @@
-
 import axios from 'axios';
 
 const API_URL = 'https://todo-api-oyhv.onrender.com/api';
+
 axios.defaults.baseURL = API_URL;
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 axios.defaults.headers.put['Content-Type'] = 'application/json';
 
-
-
-
-// הוסף token לכל בקשה אוטומטית
+// interceptor request
 axios.interceptors.request.use(config => {
     const token = localStorage.getItem('token');
     if (token) {
@@ -18,7 +15,7 @@ axios.interceptors.request.use(config => {
     return config;
 });
 
-// interceptor לתפיסת שגיאה 401
+// interceptor response
 axios.interceptors.response.use(
     response => response,
     error => {
@@ -33,9 +30,10 @@ axios.interceptors.response.use(
 
 const service = {
     login: async (username, password) => {
-    const result = await axios.post('/login', { username, password });
-    return result.data;
-},
+        const result = await axios.post('/login', { username, password });
+        return result.data;
+    },
+
     getTasks: async () => {
         try {
             const result = await axios.get('/items');
@@ -45,14 +43,17 @@ const service = {
             return [];
         }
     },
+
     addTask: async (name) => {
-        const result = await axios.post('/items', { name: name, isComplete: false });
+        const result = await axios.post('/items', { name, isComplete: false });
         return result.data;
     },
+
     setCompleted: async (id, isComplete, name) => {
-        const result = await axios.put(`/items/${id}`, { id: id, name: name, isComplete: isComplete });
+        const result = await axios.put(`/items/${id}`, { id, name, isComplete });
         return result.data;
     },
+
     deleteTask: async (id) => {
         const result = await axios.delete(`/items/${id}`);
         return result.data;
