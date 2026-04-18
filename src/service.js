@@ -55,7 +55,7 @@ const service = {
     },
 
     deleteTask: async (id) => {
-        const result = await axios.delete(`/items/${id}`);
+        const result = await axios.get('https://todo-api-oyhv.onrender.com/api/items');
         return result.data;
     }
 };
