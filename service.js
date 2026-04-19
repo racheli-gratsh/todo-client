@@ -1,12 +1,11 @@
 import axios from 'axios';
- 
+
+const BASE = 'https://todo-api-oyhv.onrender.com';
+
 const api = axios.create({
-    baseURL: 'https://todo-api-oyhv.onrender.com'
+    baseURL: BASE
 });
- 
-api.defaults.headers.post['Content-Type'] = 'application/json';
-api.defaults.headers.put['Content-Type'] = 'application/json';
- 
+
 api.interceptors.request.use(config => {
     const token = localStorage.getItem('token');
     if (token) {
@@ -14,7 +13,7 @@ api.interceptors.request.use(config => {
     }
     return config;
 });
- 
+
 api.interceptors.response.use(
     response => response,
     error => {
@@ -26,19 +25,19 @@ api.interceptors.response.use(
         return Promise.reject(error);
     }
 );
- 
+
 const service = {
     login: async (username, password) => {
-        const result = await api.post('/login', { username, password });
+        const result = await api.post(BASE + '/login', { username, password });
         return result.data;
     },
     register: async (username, password) => {
-        const result = await api.post('/register', { username, password });
+        const result = await api.post(BASE + '/register', { username, password });
         return result.data;
     },
     getTasks: async () => {
         try {
-            const result = await api.get('/items');
+            const result = await api.get(BASE + '/items');
             return Array.isArray(result.data) ? result.data : [];
         } catch (error) {
             console.error("Failed to fetch tasks:", error);
@@ -46,17 +45,17 @@ const service = {
         }
     },
     addTask: async (name) => {
-        const result = await api.post('/items', { name: name, isComplete: false });
+        const result = await api.post(BASE + '/items', { name: name, isComplete: false });
         return result.data;
     },
     setCompleted: async (id, isComplete, name) => {
-        const result = await api.put(`/items/${id}`, { id: id, name: name, isComplete: isComplete });
+        const result = await api.put(BASE + `/items/${id}`, { id: id, name: name, isComplete: isComplete });
         return result.data;
     },
     deleteTask: async (id) => {
-        const result = await api.delete(`/items/${id}`);
+        const result = await api.delete(BASE + `/items/${id}`);
         return result.data;
     }
 };
- 
+
 export default service;
