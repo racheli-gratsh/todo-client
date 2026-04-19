@@ -1,22 +1,22 @@
 import React, { useState } from 'react';
-import axios from 'axios';
-
+import service from './service';
+ 
 function Register({ onRegister }) {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [message, setMessage] = useState('');
-
+ 
     async function handleRegister(e) {
         e.preventDefault();
         try {
-            await axios.post('/register', { username, password });
-            setMessage('נרשמת בהצלחה! עבור להתחברות');
+            await service.register(username, password);
+            setMessage('נרשמת בהצלחה! עובר להתחברות...');
             setTimeout(() => onRegister(), 2000);
         } catch {
             setMessage('שגיאה בהרשמה');
         }
     }
-
+ 
     return (
         <div style={{ textAlign: 'center', marginTop: '100px' }}>
             <h2>הרשמה</h2>
@@ -29,5 +29,5 @@ function Register({ onRegister }) {
         </div>
     );
 }
-
+ 
 export default Register;

@@ -1,38 +1,33 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import service from './service';
-
+ 
 function Login({ onLogin }) {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-
-   const handleLogin = async () => {
-    try {
-        const result = await service.login(username, password);
-        localStorage.setItem('token', result.token);
-
-        onLogin(); // 👈 זה השינוי החשוב
-    } catch (err) {
-        alert('שגיאה בהתחברות');
+    const [error, setError] = useState('');
+ 
+    async function handleLogin(e) {
+        e.preventDefault();
+        try {
+            const result = await service.login(username, password);
+            localStorage.setItem('token', result.token);
+            onLogin();
+        } catch {
+            setError('שם משתמש או סיסמה שגויים');
+        }
     }
-};
-
+ 
     return (
-        <div>
-            <input
-                type="text"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-            />
-
-            <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-            />
-
-            <button onClick={handleLogin}>Login</button>
+        <div style={{ textAlign: 'center', marginTop: '100px' }}>
+            <h2>התחברות</h2>
+            <form onSubmit={handleLogin}>
+                <input placeholder="שם משתמש" value={username} onChange={e => setUsername(e.target.value)} /><br /><br />
+                <input placeholder="סיסמה" type="password" value={password} onChange={e => setPassword(e.target.value)} /><br /><br />
+                <button type="submit">התחבר</button>
+            </form>
+            {error && <p style={{ color: 'red' }}>{error}</p>}
         </div>
     );
 }
-
+ 
 export default Login;
