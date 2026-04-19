@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const api = axios.create({ baseURL:'https://todo-api-oyhv.onrender.com' });
+const api = axios.create();
 
 api.interceptors.request.use(config => {
     const token = localStorage.getItem('token');
@@ -21,12 +21,12 @@ api.interceptors.response.use(
 );
 
 const service = {
-    login: (u, p) => api.post('/login', { username: u, password: p }).then(r => r.data),
-    register: (u, p) => api.post('/register', { username: u, password: p }).then(r => r.data),
-    getTasks: () => api.get('/items').then(r => Array.isArray(r.data) ? r.data : []).catch(() => []),
-    addTask: (name) => api.post('/items', { name, isComplete: false }).then(r => r.data),
-    setCompleted: (id, isComplete, name) => api.put('/items/' + id, { id, name, isComplete }).then(r => r.data),
-    deleteTask: (id) => api.delete('/items/' + id).then(r => r.data)
+    login: (u, p) => api.post('/api/login', { username: u, password: p }).then(r => r.data),
+    register: (u, p) => api.post('/api/register', { username: u, password: p }).then(r => r.data),
+    getTasks: () => api.get('/api/items').then(r => Array.isArray(r.data) ? r.data : []).catch(() => []),
+    addTask: (name) => api.post('/api/items', { name, isComplete: false }).then(r => r.data),
+    setCompleted: (id, isComplete, name) => api.put('/api/items/' + id, { id, name, isComplete }).then(r => r.data),
+    deleteTask: (id) => api.delete('/api/items/' + id).then(r => r.data)
 };
 
 export default service;
