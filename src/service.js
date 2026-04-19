@@ -1,7 +1,6 @@
 import axios from 'axios';
 
 const BASE = 'https://todo-api-oyhv.onrender.com';
-
 const api = axios.create({
     baseURL: BASE
 });
